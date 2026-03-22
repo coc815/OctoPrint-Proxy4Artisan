@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_Proxy4Artisan/templates *
+recursive-include octoprint_Proxy4Artisan/translations *
+recursive-include octoprint_Proxy4Artisan/static *

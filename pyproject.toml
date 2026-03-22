@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OctoPrint-Proxy4Artisan"
+version = "0.1.0"
+description = "Enables OctoPrint to handle Snapmaker Artisan"
+authors = [
+    {name = "Christian Ochsenschlaeger", email = "ochsi@web.de"}
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+dynamic = [
+    "license"
+]
+
+requires-python = ">=3.7, <4"
+
+# any additional requirements (besides OctoPrint) should be listed here
+dependencies = []
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = [
+    "octoprint_Proxy4Artisan",
+    "octoprint_Proxy4Artisan.*"
+]
+
+[project.entry-points."octoprint.plugin"]
+Proxy4Artisan = "octoprint_Proxy4Artisan"
+
+[project.urls]
+Homepage = "https://github.com/coc815/OctoPrint-Proxy4Artisan"
+
+[project.optional-dependencies]
+develop = [
+    "go-task-bin"
+]

@@ -43,6 +43,7 @@ Extra config for pausing, resuming etc.
 I defined some GCODE scripts in OctoPrint, which work fine for me. Please feel free to use for yourself
 
 afterPrintCancelled
+
     ; retract filament, move Z slightly upwards
     G91
     G0 Z1
@@ -64,6 +65,7 @@ afterPrintCancelled
     M106 S0
 
 afterPrintPaused
+
     {% if pause_position.x is not none %}
     ; relative XYZE
     G91
@@ -78,7 +80,9 @@ afterPrintPaused
     ; move to a safe rest position, adjust as necessary
     G0 X0 Y0 Z400
     {% endif %}
+
 beforePrintResumed
+
     {% if pause_position.x is not none %}
 
     M140 S{{ pause_temperature.b.target }}
@@ -107,5 +111,6 @@ beforePrintResumed
 
     ; relative extruder
     M83
-        {% endif %}
+
+	{% endif %}
 

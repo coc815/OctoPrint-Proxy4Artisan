@@ -1,5 +1,7 @@
 # OctoPrint-Proxy4Artisan
 
+    This plugin enables OctoPrint to handle Snapmaker Artisan
+	
     What the plugin does
         - Connects to a real serial port (usually /dev/ttyUSB0)
         - Creates a virtual port (usually /dev/pts/0), which OctoPrint can use as printer port

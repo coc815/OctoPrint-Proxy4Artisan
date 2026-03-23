@@ -71,7 +71,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 line_modified = f"X:{X} Y:{Y} Z:{Z} E:{E} A:{A} B:{B} Count {count}"
     
             # Filamentsensor ausgelöst
-            if line == "filament_state: 0x0 -> 0x1":
+            if (line == "filament_state: 0x0 -> 0x1") or (line == "filament_state: 0x0 -> 0x2"):
                 self._logger.info("[Proxy4Artisan] Filamentsensor ausgelöst – sende Pause-Befehl")
                 self._printer.pause_print()
     

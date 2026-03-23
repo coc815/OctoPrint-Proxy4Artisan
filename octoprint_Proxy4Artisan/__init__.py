@@ -11,10 +11,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
 ):
 
     """
-    Proxy4Artisan: Virtueller USB-Proxy-Port für einen echten Drucker.
-    - Verbindet sich mit einem realen seriellen Port (z.B. /dev/ttyUSB0)
-    - Erzeugt einen virtuellen Port (PTY), den OctoPrint als Drucker-Port nutzen kann
-    - Leitet Daten bidirektional weiter
+    Proxy4Artisan: 
     - Manipuliert Temperaturzeilen: 'B0:' -> 'B:' (nur erstes Vorkommen)
     - Filament Runout triggert Pause
     - Ausgabe von M114 wird umsortiert

@@ -49,10 +49,6 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
             line_modified = line
             if "B0:" in line:
                 line_modified = line.replace("B0:", "B:", 1)
-                if line_modified != line:
-                    self._logger.debug(
-                        f"[Proxy4Artisan] Temperaturzeile angepasst: '{line}' -> '{line_modified}'"
-                    )
     
             # M114-Zeile erkennen
             m114 = re.match(
@@ -71,7 +67,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 line_modified = f"X:{X} Y:{Y} Z:{Z} E:{E} A:{A} B:{B} Count {count}"
     
             # Filamentsensor ausgelöst
-            if (line == "filament_state: 0x0 -> 0x1") or (line == "filament_state: 0x0 -> 0x2"):
+            if "filament_state: 0x0 ->" in line:
                 self._logger.info("[Proxy4Artisan] Filamentsensor ausgelöst – sende Pause-Befehl")
                 self._printer.pause_print()
     

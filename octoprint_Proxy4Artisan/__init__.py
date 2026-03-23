@@ -43,7 +43,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
             }
         }
 
-    def proxy_recv(self):
+    def proxy_recv(self, comm, line, *args, **kwargs):
         try:
             line_modified = self.line
             if "B0:" in self.line:

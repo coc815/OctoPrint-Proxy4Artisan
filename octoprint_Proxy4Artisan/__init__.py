@@ -1,6 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
+import re
 import octoprint.plugin
 
 class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,

@@ -45,18 +45,18 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
 
     def proxy_recv(self, comm, line, *args, **kwargs):
         try:
-            line_modified = self.line
-            if "B0:" in self.line:
-                line_modified = self.line.replace("B0:", "B:", 1)
-                if line_modified != self.line:
+            line_modified = line
+            if "B0:" in line:
+                line_modified = line.replace("B0:", "B:", 1)
+                if line_modified != line:
                     self._logger.debug(
-                        f"[Proxy4Artisan] Temperaturzeile angepasst: '{self.line}' -> '{line_modified}'"
+                        f"[Proxy4Artisan] Temperaturzeile angepasst: '{line}' -> '{line_modified}'"
                     )
     
             # M114-Zeile erkennen
             m114 = re.match(
                 r"X:(?P<X>\S+)\s+Y:(?P<Y>\S+)\s+Z:(?P<Z>\S+)\s+A:(?P<A>\S+)\s+B:(?P<B>\S+)\s+E:(?P<E>\S+)\s+Count\s+(?P<count>.*)",
-                self.line
+                line
             )
             if m114:
                 X = m114.group("X")
@@ -70,7 +70,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 line_modified = f"X:{X} Y:{Y} Z:{Z} E:{E} A:{A} B:{B} Count {count}"
     
             # Filamentsensor ausgelöst
-            if self.line == "filament_state: 0x0 -> 0x1":
+            if line == "filament_state: 0x0 -> 0x1":
                 self._logger.info("[Proxy4Artisan] Filamentsensor ausgelöst – sende Pause-Befehl")
                 line_modified = "//action:pause"
     

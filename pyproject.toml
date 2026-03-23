@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "OctoPrint-Proxy4Artisan"
-version = "0.1.5"
+version = "0.1.6"
 description = "Enables OctoPrint to handle Snapmaker Artisan"
 authors = [
     {name = "Christian Ochsenschlaeger", email = "ochsi@web.de"}

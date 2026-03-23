@@ -12,11 +12,11 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
 
     """
     Proxy4Artisan: 
-    - Manipuliert Temperaturzeilen: 'B0:' -> 'B:' (nur erstes Vorkommen)
-    - Filament Runout triggert Pause
-    - Ausgabe von M114 wird umsortiert
-    -    von X: Y: Z: A: B: E: Count X: Y: Z: A: B:
-    -    zu  X: Y: Z: E: A: B: Count X: Y: Z: A: B:
+    - manipulates temperature responses, for OctoPrint to be able to show a bed temperature: 'B0:' -> 'B:' (just the first occurrence per line)
+    - Filament runout will trigger @Pause
+    - Output of M114 command is reordered, for OctoPrint to correctly recognize position and set pause_position variable, to be safely used in OctoPrint's GCODE scripts
+    -    original order X: Y: Z: A: B: E: Count X: Y: Z: A: B:
+    -    new order      X: Y: Z: E: A: B: Count X: Y: Z: A: B:
     """
 
     ##~~ Softwareupdate hook
@@ -47,7 +47,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
             if "B0:" in line:
                 line_modified = line.replace("B0:", "B:", 1)
     
-            # M114-Zeile erkennen
+            # handle output from M114 command
             m114 = re.match(
                 r"X:(?P<X>\S+)\s+Y:(?P<Y>\S+)\s+Z:(?P<Z>\S+)\s+A:(?P<A>\S+)\s+B:(?P<B>\S+)\s+E:(?P<E>\S+)\s+Count\s+(?P<count>.*)",
                 line
@@ -60,16 +60,16 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 B = m114.group("B")
                 E = m114.group("E")
                 count = m114.group("count")
-                # Neu zusammensetzen in der gewünschten Reihenfolge
+                # reorder
                 line_modified = f"X:{X} Y:{Y} Z:{Z} E:{E} A:{A} B:{B} Count {count}"
     
-            # Filamentsensor ausgelöst
+            # Filament sensor triggert
             if "filament_state: 0x0 ->" in line:
-                self._logger.info("[Proxy4Artisan] Filamentsensor ausgelöst – sende Pause-Befehl")
+                self._logger.info("[Proxy4Artisan] filament sensor triggert –> pause print")
                 self._printer.pause_print()
     
         except Exception as e:
-            self._logger.exception(f"[Proxy4Artisan] Fehler bei Zeilenverarbeitung: {e}")
+            self._logger.exception(f"[Proxy4Artisan] Error in output handling: {e}")
             
         finally:
             return line_modified

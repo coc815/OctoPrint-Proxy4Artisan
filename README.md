@@ -1,4 +1,4 @@
-# OctoPrint-Proxy4Artisan
+## OctoPrint-Proxy4Artisan
 
 This plugin enables OctoPrint to handle Snapmaker Artisan
 
@@ -16,7 +16,7 @@ What the plugin does
 What the plugin does not
 - Unfortunately it will not enable Octoprint to differenciate the two bed zones of Snapmaker Artisan
 
-# Disclaimer
+## Disclaimer
 
 Use the plugin on your own risk
 I must not be held liable for any damage caused by the usage of this plugin
@@ -34,6 +34,7 @@ or manually using this URL:
 
 ## Configuration
 
+Start up your printer first, then start up OctoPrint.
 Make sure to connect your printer in OctoPrint to the virtual port (usually /dev/pts/0)
 
 Have Fun!!

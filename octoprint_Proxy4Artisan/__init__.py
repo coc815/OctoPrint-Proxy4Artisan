@@ -14,7 +14,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
     Proxy4Artisan: 
     - manipulates temperature responses, for OctoPrint to be able to show a bed temperature: 'B0:' -> 'B:' (just the first occurrence per line)
     - swaps position of occurances of T0 temperatures in temperature responses, because otherwise temperature shown in octoprint may get faulty 
-    - Filament runout will pause the print an show notification in optoprint 
+    - Filament runout will pause the print and show a notification in optoprint 
     - Output of M114 command is reordered, for OctoPrint to correctly recognize position and set pause_position variable, to be safely used in OctoPrint's GCODE scripts
     -    original order X: Y: Z: A: B: E: Count X: Y: Z: A: B:
     -    new order      X: Y: Z: E: A: B: Count X: Y: Z: A: B:

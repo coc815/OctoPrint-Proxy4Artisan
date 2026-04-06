@@ -13,7 +13,8 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
     """
     Proxy4Artisan: 
     - manipulates temperature responses, for OctoPrint to be able to show a bed temperature: 'B0:' -> 'B:' (just the first occurrence per line)
-    - Filament runout will pause the print
+    - swaps position of occurances of T0 temperatures in temperature responses, because otherwise temperature shown in octoprint may get faulty 
+    - Filament runout will pause the print and show a notification in optoprint 
     - Output of M114 command is reordered, for OctoPrint to correctly recognize position and set pause_position variable, to be safely used in OctoPrint's GCODE scripts
     -    original order X: Y: Z: A: B: E: Count X: Y: Z: A: B:
     -    new order      X: Y: Z: E: A: B: Count X: Y: Z: A: B:
@@ -44,9 +45,21 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
     def proxy_recv(self, comm, line, *args, **kwargs):
         try:
             line_modified = line
+            
+            # replace B0 with B in temperature report
             if "B0:" in line:
                 line_modified = line.replace("B0:", "B:", 1)
-    
+
+            # swaps position of T0 occurances in temperature report
+            # original order leads to erroneous display in temperature graph in some situations
+            matches = re.findall(r"(T0:\s*\d+\.\d+\s*/\s*\d+\.\d+)", line_modified)
+            if len(matches) >= 2:
+                first = matches[0]
+                second = matches[1]
+                line_modified = line_modified.replace(first, "__TEMP_SWAP_1__", 1)
+                line_modified = line_modified.replace(second, first, 1)
+                line_modified = line_modified.replace("__TEMP_SWAP_1__", second, 1)
+            
             # handle output from M114 command
             m114 = re.match(
                 r"X:(?P<X>\S+)\s+Y:(?P<Y>\S+)\s+Z:(?P<Z>\S+)\s+A:(?P<A>\S+)\s+B:(?P<B>\S+)\s+E:(?P<E>\S+)\s+Count\s+(?P<count>.*)",
@@ -64,9 +77,17 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 line_modified = f"X:{X} Y:{Y} Z:{Z} E:{E} A:{A} B:{B} Count {count}"
     
             # Filament sensor triggert
-            if "filament_state: 0x0 ->" in line:
-                self._logger.info("[Proxy4Artisan] filament sensor triggert –> pause print")
+            if (("filament_state: 0x0 -> 0x1" in line)
+                    or ("filament_state: 0x2 -> 0x3" in line)):
+                self._logger.info("[Proxy4Artisan] filament sensor triggered for extruder 0 –> pause print")
                 self._printer.pause_print()
+                self._printer.commands(["M118 A1 action:notification Extruder 0: Filament runout"])
+                        
+            if (("filament_state: 0x0 -> 0x2" in line)
+                    or ("filament_state: 0x1 -> 0x3" in line)):
+                self._logger.info("[Proxy4Artisan] filament sensor triggered for extruder 1 –> pause print")
+                self._printer.pause_print()
+                self._printer.commands(["M118 A1 action:notification Extruder 1: Filament runout"])
     
         except Exception as e:
             self._logger.exception(f"[Proxy4Artisan] Error in output handling: {e}")

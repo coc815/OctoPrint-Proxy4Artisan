@@ -51,6 +51,7 @@ class Proxy4artisanPlugin(octoprint.plugin.StartupPlugin,
                 line_modified = line.replace("B0:", "B:", 1)
 
             # swaps position of T0 occurances in temperature report
+            # original order leads to erroneous display in temperature graph in some situations
             matches = re.findall(r"(T0:\s*\d+\.\d+\s*/\s*\d+\.\d+)", line_modified)
             if len(matches) >= 2:
                 first = matches[0]
